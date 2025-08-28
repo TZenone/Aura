@@ -20,7 +20,7 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FString("Increases Armor and Armor Penetration."));
 	GameplayTags.Attributes_Primary_Vigor = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Attributes.Primary.Vigor"),
-		FString("Increases Health."));
+		FString("Increases maximum Health."));
 	
 	// Secondary Attributes
 	GameplayTags.Attributes_Secondary_Armor = UGameplayTagsManager::Get().AddNativeGameplayTag(
