@@ -44,7 +44,7 @@ public:
 	FGameplayTag InputTag_4;
 
 	FGameplayTag Damage;
-	
+	FGameplayTag Effects_HitReact;
 	// Vital Attributes
 	/*FGameplayTag Attributes_Vital_Health;
 	FGameplayTag Attributes_Vital_Mana;*/
