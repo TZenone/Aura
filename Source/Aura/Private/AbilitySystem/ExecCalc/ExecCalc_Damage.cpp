@@ -15,12 +15,22 @@ struct AuraDamageStatics
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Armor);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(ArmorPenetration);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(BlockChance);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalHitChance);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalHitDamage);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalHitResistance);
 	
 	AuraDamageStatics()
 	{
+		// Target
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, Armor, Target, false);
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, ArmorPenetration, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, BlockChance, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, CriticalHitResistance, Target, false);
+
+		// Source
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, ArmorPenetration, Source, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, CriticalHitChance, Source, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, CriticalHitDamage, Source, false);
+		
 	};
 };
 
@@ -35,6 +45,9 @@ UExecCalc_Damage::UExecCalc_Damage()
 	RelevantAttributesToCapture.Add(DamageStatics().ArmorDef);
 	RelevantAttributesToCapture.Add(DamageStatics().ArmorPenetrationDef);
 	RelevantAttributesToCapture.Add(DamageStatics().BlockChanceDef);
+	RelevantAttributesToCapture.Add(DamageStatics().CriticalHitChanceDef);
+	RelevantAttributesToCapture.Add(DamageStatics().CriticalHitDamageDef);
+	RelevantAttributesToCapture.Add(DamageStatics().CriticalHitResistanceDef);
 }
 
 void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
@@ -57,9 +70,8 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 	// Get Damage set by caller Magnitude
 	float Damage = Spec.GetSetByCallerMagnitude(FAuraGameplayTags::Get().Damage);
-
-	// Capture BlockChance on Target and determine if there was a successful block.
 	
+	// Capture BlockChance on Target and determine if there was a successful block.
 	float TargetBlockChance = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().BlockChanceDef, EvaluationParameters, TargetBlockChance);
 	TargetBlockChance = FMath::Max<float>(TargetBlockChance, 0.f);
@@ -90,6 +102,30 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	// Armor ignores a percentage of incoming Damage.
 	Damage *= (100 - EffectiveArmor * EffectiveArmorCoefficient) / 100.f;
 	
+	// Capture CritChance on Source...
+	float SourceCriticalHitChance = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().CriticalHitChanceDef, EvaluationParameters, SourceCriticalHitChance);
+	SourceCriticalHitChance = FMath::Max<float>(SourceCriticalHitChance, 0.f);
+
+	// Capture CriticalDamage on Source
+	float SourceCriticalHitDamage = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().CriticalHitDamageDef, EvaluationParameters, SourceCriticalHitDamage);
+	SourceCriticalHitDamage = FMath::Max<float>(SourceCriticalHitDamage, 0.f);
+	
+	// Capture CriticalResistance on target;
+	float TargetCriticalHitResistance = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().CriticalHitResistanceDef, EvaluationParameters, TargetCriticalHitResistance);
+	TargetCriticalHitResistance = FMath::Max<float>(TargetCriticalHitResistance, 0.f);
+
+	const FRealCurve* CriticalHitResistanceCurve = CharacterClassInfo->DamageCalculationCoefficients->FindCurve(FName("CriticalHitResistance"), FString());
+	const float CriticalHitResistanceCoefficient = CriticalHitResistanceCurve->Eval(TargetCombatInterface->GetPlayerLevel());
+	//... and determine if it was a crit.
+	const float EffectiveCriticalHitChance = SourceCriticalHitChance - TargetCriticalHitResistance * CriticalHitResistanceCoefficient;
+	const bool bIsCrit = FMath::RandRange(1, 100) < EffectiveCriticalHitChance;
+	
+	// Final crit calc
+	Damage = bIsCrit ? Damage * (2.f + (SourceCriticalHitDamage / 100)) : Damage;
+
 	const FGameplayModifierEvaluatedData EvaluatedData(UAuraAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Additive, Damage);
 	OutExecutionOutput.AddOutputModifier(EvaluatedData);
 }
