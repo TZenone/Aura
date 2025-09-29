@@ -4,6 +4,7 @@
 #include "AbilitySystem/ExecCalc/ExecCalc_Damage.h"
 
 #include "AbilitySystemComponent.h"
+#include "AuraAbilityTypes.h"
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "AbilitySystem/AuraAttributeSet.h"
@@ -78,6 +79,10 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	
 	// If Block, halve the damage.
 	const bool bBlocked = FMath::RandRange(1, 100) < TargetBlockChance;
+
+	FGameplayEffectContextHandle EffectContextHandle = Spec.GetContext();
+	UAuraAbilitySystemLibrary::SetIsBlockedHit(EffectContextHandle, bBlocked);
+	
 	Damage = bBlocked ? Damage / 2.f : Damage;
 
 	// Armor 
@@ -122,7 +127,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	//... and determine if it was a crit.
 	const float EffectiveCriticalHitChance = SourceCriticalHitChance - TargetCriticalHitResistance * CriticalHitResistanceCoefficient;
 	const bool bIsCrit = FMath::RandRange(1, 100) < EffectiveCriticalHitChance;
-	
+	UAuraAbilitySystemLibrary::SetIsCriticalHit(EffectContextHandle, bIsCrit);
 	// Final crit calc
 	Damage = bIsCrit ? Damage * (2.f + (SourceCriticalHitDamage / 100)) : Damage;
 
