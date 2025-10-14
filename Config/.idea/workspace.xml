@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="db9f4b1e-4283-48ae-994b-ad6ed366a36a" name="Changes" comment="" />
+    <list default="true" id="db9f4b1e-4283-48ae-994b-ad6ed366a36a" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../Content/Blueprints/AI/Tasks/BTT_Attack.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/../Content/Blueprints/AI/Tasks/BTT_Attack.uasset" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -37,6 +39,7 @@
       <workItem from="1758706319400" duration="6000" />
       <workItem from="1758790834157" duration="4000" />
       <workItem from="1759246165188" duration="18000" />
+      <workItem from="1760346038138" duration="8000" />
     </task>
     <servers />
   </component>
