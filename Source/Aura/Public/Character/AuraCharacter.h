@@ -7,6 +7,9 @@
 #include "Interaction/PlayerInterface.h"
 #include "AuraCharacter.generated.h"
 
+class USpringArmComponent;
+class UCameraComponent;
+class UNiagaraComponent;
 class AAuraPlayerState;
 /**
  * 
@@ -20,7 +23,6 @@ public:
 	
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
-	virtual void InitAbilityActorInfo() override;
 
 	/* Combat Interface */
 	virtual int32 GetPlayerLevel_Implementation() override; 
@@ -37,4 +39,20 @@ public:
 	virtual void AddToSpellPoints_Implementation(int32 InSpellPoints) override;
 	virtual void AddToAttributePoints_Implementation(int32 InAttributePoints) override;
 	/* End Player Interface */
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UNiagaraComponent> LevelUpNiagaraComponent;
+
+private:
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UCameraComponent> TopDownCameraComponent;
+	
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USpringArmComponent> CameraBoom;
+	
+	virtual void InitAbilityActorInfo() override;
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastLevelUpParticles() const;
 };
