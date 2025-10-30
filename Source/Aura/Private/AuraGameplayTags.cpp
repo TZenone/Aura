@@ -92,6 +92,12 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.InputTag_4 = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("InputTag.4"),
 		FString("Input tag for 4 key."));
+	GameplayTags.InputTag_Passive_1 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("InputTag.Passive.1"),
+		FString("Input tag for passive ability 1."));
+	GameplayTags.InputTag_Passive_2 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("InputTag.Passive.2"),
+		FString("Input tag for passive ability 2."));
 
 	GameplayTags.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Damage"),
@@ -133,6 +139,33 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Abilities_Fire_Firebolt= UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Abilities.Fire.Firebolt"),
 		FString("Firebolt ability tag"));
+
+	GameplayTags.Abilities_HitReact= UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.HitReact"),
+		FString("HitReact ability tag"));
+
+	GameplayTags.Abilities_Status_Eligible= UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Status.Eligible"),
+		FString("Eligible status"));
+	GameplayTags.Abilities_Status_Equipped= UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Status.Equipped"),
+		FString("Equipped status"));
+	GameplayTags.Abilities_Status_Locked= UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Status.Locked"),
+		FString("Locked status"));
+	GameplayTags.Abilities_Status_Unlocked= UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Status.Unlocked"),
+		FString("Unlocked status"));
+
+	GameplayTags.Abilities_Type_Offensive= UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Type.Offensive"),
+		FString("Offensive status"));
+	GameplayTags.Abilities_Type_Passive= UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Status.Passive"),
+		FString("Passive status"));
+	GameplayTags.Abilities_Type_None= UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Status.None"),
+		FString("None status"));
 
 	// Abilities Cooldowns
 	GameplayTags.Cooldown_Fire_Firebolt= UGameplayTagsManager::Get().AddNativeGameplayTag(
