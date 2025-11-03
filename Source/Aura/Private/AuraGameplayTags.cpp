@@ -130,6 +130,9 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FString("Tag granted when Hit reacting"));
 
 	// Abilities
+	GameplayTags.Abilities_None = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.None"),
+		FString("No ability - like the nullptr for ability tags"));
 	GameplayTags.Abilities_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Abilities.Attack"),
 		FString("Attack ability tag"));
